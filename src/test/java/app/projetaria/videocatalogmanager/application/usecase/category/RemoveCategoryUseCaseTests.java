@@ -1,10 +1,12 @@
 package app.projetaria.videocatalogmanager.application.usecase.category;
 
+
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
@@ -20,29 +22,28 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import app.projetaria.videocatalogmanager.application.usecase.category.common.CategoryOutputData;
-import app.projetaria.videocatalogmanager.application.usecase.category.get.FindByIdCategoryUseCase;
+import app.projetaria.videocatalogmanager.application.usecase.category.remove.RemoveCategoryUseCase;
 import app.projetaria.videocatalogmanager.domain.entity.Category;
 import app.projetaria.videocatalogmanager.domain.exception.DomainException;
 import app.projetaria.videocatalogmanager.domain.repository.ICategoryRepository;
 
 @ExtendWith(SpringExtension.class)
-public class FindByIdCategoryUseCaseTests {
-    
+public class RemoveCategoryUseCaseTests {
+
     @InjectMocks
-    private FindByIdCategoryUseCase useCase;
+    private RemoveCategoryUseCase useCase;
 
     @Mock
     private ICategoryRepository repository;
 
     @BeforeEach
     public void setup() {
-        useCase = new FindByIdCategoryUseCase(repository);
+        useCase = new RemoveCategoryUseCase(repository);
     }
-
+    
     @Test
-    @DisplayName("Should find a category by id")
-    public void shouldFindCategoryById() {
+    @DisplayName("Should remove a category by id")
+    public void shouldRemoveCategoryById() {
         final UUID id = UUID.randomUUID();
         final String name = "Comedy";
         final String description = "Comedy category";
@@ -52,33 +53,31 @@ public class FindByIdCategoryUseCaseTests {
         when(repository.findById(any(UUID.class)))
             .thenReturn(Optional.of(category));
 
-        final CategoryOutputData categoryData = useCase.execute(id);
+        doNothing().when(repository).remove(any(UUID.class));
+
+        assertDoesNotThrow(() -> useCase.execute(id));
 
         verify(repository, times(1)).findById(any(UUID.class));
-
-        assertThat(categoryData, is(notNullValue()));
-        assertThat(categoryData.getId(), is(category.getId()));
-        assertThat(categoryData.getName(), is(category.getName()));
-        assertThat(categoryData.getDescription(), is(category.getDescription()));
-        assertThat(categoryData.getIsActive(), is(category.getIsActive()));
+        verify(repository, times(1)).remove(any(UUID.class));
     }
 
     @Test
-    @DisplayName("Should throw DomainException when category not exists by id")
-    public void shouldThrowDomainExceptionWhenCategoryNotExistsById() {
+    @DisplayName("Should throw DomainException when try remove a nonexistent category")
+    public void shouldThrowDomainExceptionWhenTryRemoveNonexistentCategory() {
         final UUID id = UUID.randomUUID();
-        final String exceptionMessage = String.format("Category %s not found", id);
-        
+        final String exceptionMessage = String.format("Category %s not found to remove", id);
+
         when(repository.findById(any(UUID.class)))
             .thenReturn(Optional.empty());
 
         DomainException exception = assertThrows(
             DomainException.class, 
             () -> useCase.execute(id),
-            "Expect get category by id do throw, but it didn't"
+            "Expect remove category by id do throw, but it didn't"
         );
 
         verify(repository, times(1)).findById(any(UUID.class));
+        verify(repository, times(0)).remove(any(UUID.class));
 
         assertThat(exception.getMessage(), is(exceptionMessage));
     }
