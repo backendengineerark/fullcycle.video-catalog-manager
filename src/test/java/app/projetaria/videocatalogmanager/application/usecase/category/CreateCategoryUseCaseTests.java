@@ -1,9 +1,11 @@
 package app.projetaria.videocatalogmanager.application.usecase.category;
 
+import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
 import static org.hamcrest.Matchers.notNullValue;
-import static org.hamcrest.MatcherAssert.assertThat;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 import static org.mockito.Mockito.when;
 
 import java.util.UUID;
@@ -53,6 +55,8 @@ public class CreateCategoryUseCaseTests {
             .thenReturn(categoryCreated);
         
         CategoryOutputData categoryOutput = useCase.execute(categoryData);
+
+        verify(repository, times(1)).create(any(Category.class));
 
         assertThat(categoryOutput.getId(), is(notNullValue()));
         assertThat(categoryOutput.getName(), is(categoryData.getName()));
