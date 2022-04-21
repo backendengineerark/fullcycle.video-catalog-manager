@@ -16,8 +16,8 @@ import static org.hamcrest.MatcherAssert.assertThat;
 public class CategoryTests {
     
     @Test
-    @DisplayName("Should create a category")
-    public void shouldCreateCategory() {
+    @DisplayName("Should instantiate a category")
+    public void shouldInstantiateCategory() {
         final UUID id = UUID.randomUUID();
         final String name = "Comedy";
         final String description = "Comedy category";
@@ -60,8 +60,8 @@ public class CategoryTests {
     }
 
     @Test
-    @DisplayName("Should throw DomainException when try crate a category with name nullable")
-    public void shouldThrowExceptionWhenTryCreateCategoryWithNameNullable() {
+    @DisplayName("Should throw DomainException when try instantiate a category with name nullable")
+    public void shouldThrowExceptionWhenTryInstantiateCategoryWithNameNullable() {
         final String exceptionMessage = "Name cannot be null";
         final String name = null;
         final String description = "Wa category";
@@ -75,8 +75,8 @@ public class CategoryTests {
     }
 
     @Test
-    @DisplayName("Should throw DomainException when try crate a category with name less than 3 characters")
-    public void shouldThrowExceptionWhenTryCreateCategoryWithNameLessThan3Characters() {
+    @DisplayName("Should throw DomainException when try instantiate a category with name less than 3 characters")
+    public void shouldThrowExceptionWhenTryInstantiateCategoryWithNameLessThan3Characters() {
         final String exceptionMessage = "Name must be at last 3 characters";
         final String name = "Wa";
         final String description = "Wa category";
