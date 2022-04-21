@@ -1,8 +1,9 @@
-package app.projetaria.videocatalogmanager.domain;
+package app.projetaria.videocatalogmanager.domain.entity;
 
 import java.util.Optional;
 import java.util.UUID;
 
+import app.projetaria.videocatalogmanager.domain.exception.DomainException;
 import lombok.Getter;
 
 @Getter
@@ -30,13 +31,13 @@ public class Category {
         Optional.ofNullable(name)
             .map(inputName -> {
                 if (inputName.length() < 3) {
-                    throw new RuntimeException("Name must be at last 3 characteres");
+                    throw new DomainException("Name must be at last 3 characters");
                 }
                 this.name = inputName;
                 return this.name;
             })
             .orElseThrow(() -> {
-                throw new RuntimeException("Name cannot be null");
+                throw new DomainException("Name cannot be null");
             });
     }
 
