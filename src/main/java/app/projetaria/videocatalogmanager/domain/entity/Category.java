@@ -21,7 +21,7 @@ public class Category {
         this.activate();
     }
 
-    public Category(String name, String description) {
+    public Category(final String name, final String description) {
         this.changeName(name);
         this.changeDescription(description);
         this.activate();

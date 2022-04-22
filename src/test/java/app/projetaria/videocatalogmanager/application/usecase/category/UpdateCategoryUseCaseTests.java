@@ -23,7 +23,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import app.projetaria.videocatalogmanager.application.exception.ApplicationException;
 import app.projetaria.videocatalogmanager.application.exception.NotFoundException;
 import app.projetaria.videocatalogmanager.application.usecase.category.update.UpdateCategoryInputData;
 import app.projetaria.videocatalogmanager.application.usecase.category.update.UpdateCategoryUseCase;
