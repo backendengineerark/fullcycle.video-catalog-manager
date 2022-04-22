@@ -1,3 +1,6 @@
+### CUSTOM ###
+.docker/db/dbdata
+
 HELP.md
 .gradle
 build/
