@@ -4,8 +4,8 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
+import app.projetaria.videocatalogmanager.application.exception.NotFoundException;
 import app.projetaria.videocatalogmanager.application.usecase.category.common.CategoryOutputData;
-import app.projetaria.videocatalogmanager.domain.exception.DomainException;
 import app.projetaria.videocatalogmanager.domain.repository.ICategoryRepository;
 import lombok.AllArgsConstructor;
 
@@ -25,6 +25,6 @@ public class FindByIdCategoryUseCase implements IFindByIdCategoryUseCase {
                 .description(category.getDescription())
                 .isActive(category.getIsActive())
                 .build())
-            .orElseThrow(() -> new DomainException(String.format("Category %s not found", id)));
+            .orElseThrow(() -> new NotFoundException(String.format("Category %s not found", id)));
     }
 }

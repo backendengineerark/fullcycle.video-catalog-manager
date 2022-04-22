@@ -4,7 +4,7 @@ import java.util.UUID;
 
 import org.springframework.stereotype.Component;
 
-import app.projetaria.videocatalogmanager.domain.exception.DomainException;
+import app.projetaria.videocatalogmanager.application.exception.NotFoundException;
 import app.projetaria.videocatalogmanager.domain.repository.ICategoryRepository;
 import lombok.AllArgsConstructor;
 
@@ -20,7 +20,7 @@ public class RemoveCategoryUseCase implements IRemoveCategoryUseCase {
             .ifPresentOrElse(
                 category -> repository.remove(id), 
                 () -> { 
-                    throw new DomainException(String.format("Category %s not found to remove", id)); 
+                    throw new NotFoundException(String.format("Category %s not found to remove", id)); 
                 });
     }
     

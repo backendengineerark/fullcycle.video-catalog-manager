@@ -3,6 +3,7 @@ package app.projetaria.videocatalogmanager.application.usecase.category;
 
 import static org.hamcrest.MatcherAssert.assertThat;
 import static org.hamcrest.Matchers.is;
+import static org.hamcrest.Matchers.notNullValue;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
@@ -24,57 +25,75 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import app.projetaria.videocatalogmanager.application.exception.ApplicationException;
 import app.projetaria.videocatalogmanager.application.exception.NotFoundException;
-import app.projetaria.videocatalogmanager.application.usecase.category.remove.RemoveCategoryUseCase;
+import app.projetaria.videocatalogmanager.application.usecase.category.update.UpdateCategoryInputData;
+import app.projetaria.videocatalogmanager.application.usecase.category.update.UpdateCategoryUseCase;
 import app.projetaria.videocatalogmanager.domain.entity.Category;
 import app.projetaria.videocatalogmanager.domain.repository.ICategoryRepository;
 
 @ExtendWith(SpringExtension.class)
-public class RemoveCategoryUseCaseTests {
-
+public class UpdateCategoryUseCaseTests {
+    
     @InjectMocks
-    private RemoveCategoryUseCase useCase;
+    private UpdateCategoryUseCase useCase;
 
     @Mock
     private ICategoryRepository repository;
 
     @BeforeEach
-    public void setup() {
-        useCase = new RemoveCategoryUseCase(repository);
+    private void setup() {
+        useCase = new UpdateCategoryUseCase(repository);  
     }
-    
-    @Test
-    @DisplayName("Should remove a category by id")
-    public void shouldRemoveCategoryById() {
-        final UUID id = UUID.randomUUID();
-        final String name = "Comedy";
-        final String description = "Comedy category";
 
-        final Category category = new Category(id, name, description);
+    @Test
+    @DisplayName("Should update a category by id")
+    public void shouldUpdateCategorybyId() {
+        final UUID id = UUID.randomUUID();
+        final String newName = "Action Fun";
+        final String newDescription = "Action Fun Category";
+        final Boolean newIsActive = Boolean.FALSE;
+
+        final UpdateCategoryInputData data = 
+            new UpdateCategoryInputData(newName, newDescription, newIsActive);
+
+        final Category category = new Category(id, "Action", "Action Category");
 
         when(repository.findById(any(UUID.class)))
             .thenReturn(Optional.of(category));
+        
+        doNothing().when(repository).update(any(Category.class));
 
-        doNothing().when(repository).remove(any(UUID.class));
-
-        assertDoesNotThrow(() -> useCase.execute(id));
+        assertDoesNotThrow(() -> useCase.execute(id, data));
 
         verify(repository, times(1)).findById(any(UUID.class));
-        verify(repository, times(1)).remove(any(UUID.class));
+        verify(repository, times(1)).update(any(Category.class));
+
+        assertThat(category.getId(), is(notNullValue()));
+        assertThat(category.getName(), is(data.getName()));
+        assertThat(category.getDescription(), is(data.getDescription()));
+        assertThat(category.getIsActive(), is(data.getIsActive()));
     }
 
     @Test
     @DisplayName("Should throw DomainException when try remove a nonexistent category")
     public void shouldThrowDomainExceptionWhenTryRemoveNonexistentCategory() {
         final UUID id = UUID.randomUUID();
-        final String exceptionMessage = String.format("Category %s not found to remove", id);
+        final String newName = "Action Fun";
+        final String newDescription = "Action Fun Category";
+        final Boolean newIsActive = Boolean.FALSE;
+
+        final UpdateCategoryInputData data = 
+            new UpdateCategoryInputData(newName, newDescription, newIsActive);
+
+        final String exceptionMessage = 
+            String.format("Category %s not found to update", id);
 
         when(repository.findById(any(UUID.class)))
             .thenReturn(Optional.empty());
 
         NotFoundException exception = assertThrows(
             NotFoundException.class, 
-            () -> useCase.execute(id),
-            "Expect remove category by id do throw, but it didn't"
+            () -> useCase.execute(id, data),
+            "Expect update category by id do throw, but it didn't"
         );
 
         verify(repository, times(1)).findById(any(UUID.class));

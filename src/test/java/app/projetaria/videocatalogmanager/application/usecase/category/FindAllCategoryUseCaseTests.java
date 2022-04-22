@@ -42,8 +42,8 @@ public class FindAllCategoryUseCaseTests {
     @Test
     @DisplayName("Should find all categories")
     public void shouldFindAllCategories() {
-        Category category1 = new Category(UUID.randomUUID(), "Action", "Action category");
-        Category category2 = new Category(UUID.randomUUID(), "Comedy", "Comedy category");
+        final Category category1 = new Category(UUID.randomUUID(), "Action", "Action category");
+        final Category category2 = new Category(UUID.randomUUID(), "Comedy", "Comedy category");
         List<Category> categories = Arrays.asList(category1, category2);
 
         when(repository.findAll())

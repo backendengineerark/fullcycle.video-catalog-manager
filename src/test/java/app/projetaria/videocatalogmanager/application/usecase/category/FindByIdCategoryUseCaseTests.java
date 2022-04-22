@@ -20,10 +20,11 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import app.projetaria.videocatalogmanager.application.exception.ApplicationException;
+import app.projetaria.videocatalogmanager.application.exception.NotFoundException;
 import app.projetaria.videocatalogmanager.application.usecase.category.common.CategoryOutputData;
 import app.projetaria.videocatalogmanager.application.usecase.category.get.FindByIdCategoryUseCase;
 import app.projetaria.videocatalogmanager.domain.entity.Category;
-import app.projetaria.videocatalogmanager.domain.exception.DomainException;
 import app.projetaria.videocatalogmanager.domain.repository.ICategoryRepository;
 
 @ExtendWith(SpringExtension.class)
@@ -72,8 +73,8 @@ public class FindByIdCategoryUseCaseTests {
         when(repository.findById(any(UUID.class)))
             .thenReturn(Optional.empty());
 
-        DomainException exception = assertThrows(
-            DomainException.class, 
+        NotFoundException exception = assertThrows(
+            NotFoundException.class, 
             () -> useCase.execute(id),
             "Expect get category by id do throw, but it didn't"
         );
