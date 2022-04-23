@@ -25,6 +25,7 @@ public class Category {
         this.changeName(name);
         this.changeDescription(description);
         this.activate();
+        this.id = UUID.randomUUID();
     }
     
     public void changeName(final String name) {

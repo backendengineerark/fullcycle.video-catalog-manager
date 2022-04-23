@@ -8,8 +8,9 @@ services:
     restart: always
     environment:
       - MYSQL_ROOT_PASSWORD=123456
-      - MYSQL_DATABASE=video-catalog
+      - MYSQL_DATABASE=video_catalog_db
     ports:
       - 33006:3306
     volumes:
         - ./db/dbdata:/var/lib/mysql
+        - ./db/tables.sql:/docker-entrypoint-initdb.d/1.sql
