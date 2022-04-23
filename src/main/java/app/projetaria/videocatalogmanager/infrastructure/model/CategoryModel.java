@@ -5,7 +5,8 @@ import java.util.UUID;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
-    
+import javax.persistence.Table;
+
 import app.projetaria.videocatalogmanager.domain.entity.Category;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,10 +17,12 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-@Entity(name = "categories")
+@Entity
+@Table(name = "categories")
 public class CategoryModel {
     
     @Id
+    @Column
     private UUID id;
     
     @Column
@@ -42,7 +45,7 @@ public class CategoryModel {
 
     public Category toCategory() {
         Category category = new Category(this.getId(), this.getName(), this.getDescription());
-            if (Boolean.FALSE.equals(category.getIsActive())) {
+            if (Boolean.FALSE.equals(this.getIsActive())) {
                 category.deactivate();
             }
             

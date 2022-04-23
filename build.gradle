@@ -26,12 +26,13 @@ dependencies {
 		'org.springframework.boot:spring-boot-starter-validation'
 	)
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	developmentOnly ('org.springframework.boot:spring-boot-devtools')
 	runtimeOnly 'mysql:mysql-connector-java'
 	annotationProcessor 'org.projectlombok:lombok'
 	testImplementation (
 		'org.springframework.boot:spring-boot-starter-test',
-		'org.hamcrest:hamcrest-library:2.2'
+		'org.hamcrest:hamcrest-library:2.2',
+		'com.h2database:h2'
 	)
 }
 
