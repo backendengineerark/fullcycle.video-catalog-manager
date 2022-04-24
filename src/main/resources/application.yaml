@@ -15,3 +15,6 @@ spring:
       org:
         hibernate:
           SQL: ${LOGGING_LEVEL_HIBERNATE:true}
+  mvc:
+    pathmatch:
+      matching-strategy: ANT_PATH_MATCHER
