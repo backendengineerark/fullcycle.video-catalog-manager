@@ -20,7 +20,9 @@ public class UpdateCategoryUseCase implements IUpdateCategoryUseCase {
             .map(category -> {
                 category.changeName(data.getName());
                 category.changeDescription(data.getDescription());
-                if (Boolean.FALSE.equals(data.getIsActive())) {
+                if (Boolean.TRUE.equals(data.getIsActive())) {
+                    category.activate();
+                } else {
                     category.deactivate();
                 }
                 repository.update(category);
