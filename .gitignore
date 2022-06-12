@@ -1,6 +1,10 @@
 ### CUSTOM ###
 .docker/db/dbdata
 
+target
+
+.DS_Store
+
 HELP.md
 .gradle
 build/
