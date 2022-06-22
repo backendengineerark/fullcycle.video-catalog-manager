@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
-import app.projetaria.videocatalogmanager.domain.entity.Category;
+import app.projetaria.videocatalogmanager.domain.category.Category;
 
 public interface ICategoryRepository {
 
