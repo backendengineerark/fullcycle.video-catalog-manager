@@ -11,7 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 import java.util.Objects;
@@ -208,7 +207,7 @@ public class UpdateCategoryUseCaseTests {
 
     @Test
     @DisplayName("Should throw NotFoundException when try update a category with invalid ID")
-    public void givenACommandWithInvalidID_whenCallUpdateCategory_shouldReturnCategoryId() {
+    public void givenACommandWithInvalidID_whenCallUpdateCategory_shouldReturnNotFoundException() {
         final String expectedId = "123";
         final String expectedName = "Comedy";
         final String expectedDescription = "Comedy category";
