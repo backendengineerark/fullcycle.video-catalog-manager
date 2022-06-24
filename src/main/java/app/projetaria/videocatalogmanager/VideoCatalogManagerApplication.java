@@ -1,5 +1,6 @@
 package app.projetaria.videocatalogmanager;
 
+import app.projetaria.videocatalogmanager.configuration.WebServerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
@@ -7,7 +8,7 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class VideoCatalogManagerApplication {
 
 	public static void main(String[] args) {
-		SpringApplication.run(VideoCatalogManagerApplication.class, args);
+		SpringApplication.run(WebServerConfig.class, args);
 	}
 
 }
