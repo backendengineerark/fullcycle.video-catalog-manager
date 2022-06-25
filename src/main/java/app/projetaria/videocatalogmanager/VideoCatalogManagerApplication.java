@@ -1,6 +1,6 @@
 package app.projetaria.videocatalogmanager;
 
-import app.projetaria.videocatalogmanager.configuration.WebServerConfig;
+import app.projetaria.videocatalogmanager.infrastructure.configuration.WebServerConfig;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
