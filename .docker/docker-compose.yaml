@@ -1,16 +1,24 @@
-version: '3'
+version: '3.7'
 
 services:
   db:
-    container_name: video-catalog-db
-    image: mariadb:10.5.8
+    container_name: fc_video-catalog-mysql
+    image: mysql:latest
+    platform: linux/amd64
     tty: true
     restart: always
+    security_opt:
+      - seccomp:unconfined
     environment:
       - MYSQL_ROOT_PASSWORD=123456
       - MYSQL_DATABASE=video_catalog_db
     ports:
       - 33006:3306
-    volumes:
-        - ./db/dbdata:/var/lib/mysql
-        - ./db/tables.sql:/docker-entrypoint-initdb.d/1.sql
+#    volumes:
+#        - ./db/dbdata:/var/lib/mysql
+#        - ./db/tables.sql:/docker-entrypoint-initdb.d/1.sql
+    networks:
+      - video-catalog-network
+
+networks:
+  video-catalog-network:
