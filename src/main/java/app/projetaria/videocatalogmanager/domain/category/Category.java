@@ -17,9 +17,14 @@ public class Category extends AggregateRoot<CategoryId> implements Cloneable {
     private Instant updatedAt;
     private Instant deletedAt;
 
-    private Category(final CategoryId anId, final String aName, final String aDescription,
-                     final Boolean isActive, final  Instant aCreatedAt,
-                     final Instant anUpdatedAt, final Instant aDeletedAt) {
+    private Category(
+            final CategoryId anId,
+            final String aName,
+            final String aDescription,
+            final Boolean isActive,
+            final  Instant aCreatedAt,
+            final Instant anUpdatedAt,
+            final Instant aDeletedAt) {
         super(anId);
         this.name = aName;
         this.description = aDescription;
@@ -30,21 +35,48 @@ public class Category extends AggregateRoot<CategoryId> implements Cloneable {
     }
 
     public static Category create(
-            final String aName, final String aDescription, final Boolean isActive) {
+            final String aName,
+            final String aDescription,
+            final Boolean isActive) {
+
         Instant now = Instant.now();
         Instant deletedAt = isActive ? null : now;
-        return new Category(CategoryId.unique(), aName, aDescription, isActive, now, now, deletedAt);
+        return new Category(
+            CategoryId.unique(),
+            aName,
+            aDescription,
+            isActive,
+            now,
+            now,
+            deletedAt
+        );
     }
 
     public static Category with(
-            final CategoryId aId, final String aName,
-            final String aDescription, final Boolean isActive, final Instant createdAt,
-            final Instant updatedAt, final Instant deletedAt) {
-        return new Category(aId, aName, aDescription, isActive, createdAt, updatedAt, deletedAt);
+            final CategoryId aId,
+            final String aName,
+            final String aDescription,
+            final Boolean isActive,
+            final Instant createdAt,
+            final Instant updatedAt,
+            final Instant deletedAt
+    ) {
+        return new Category(
+            aId,
+            aName,
+            aDescription,
+            isActive,
+            Objects.requireNonNull(createdAt, "CreatedAt value must not be null"),
+            Objects.requireNonNull(updatedAt, "UpdatedAt value must not be null"),
+            deletedAt
+        );
     }
 
     public Category update(
-            final String aName, final String aDescription, final Boolean isActive) {
+            final String aName,
+            final String aDescription,
+            final Boolean isActive
+    ) {
         if (isActive) {
             this.activate();
         } else {
