@@ -54,7 +54,7 @@ public class ListCategoriesUseCaseTest {
                 expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
         final Pagination<Category> expectedPagination =
-                new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories);
+                new Pagination<>(expectedPage, expectedPerPage, Long.valueOf(categories.size()), categories);
 
         final Integer expectedItemsCount = 2;
 
@@ -70,7 +70,7 @@ public class ListCategoriesUseCaseTest {
         assertThat(result, is(expectedResults));
         assertThat(expectedPage, is(result.currentPage()));
         assertThat(expectedPerPage, is(result.perPage()));
-        assertThat(categories.size(), is(result.total()));
+        assertThat(Long.valueOf(categories.size()), is(result.total()));
     }
 
     @Test
@@ -88,7 +88,7 @@ public class ListCategoriesUseCaseTest {
                 expectedPerPage, expectedTerms, expectedSort, expectedDirection);
 
         final Pagination<Category> expectedPagination =
-                new Pagination<>(expectedPage, expectedPerPage, categories.size(), categories);
+                new Pagination<>(expectedPage, expectedPerPage, Long.valueOf(categories.size()), categories);
 
         final Integer expectedItemsCount = 0;
 
@@ -104,7 +104,7 @@ public class ListCategoriesUseCaseTest {
         assertThat(result, is(expectedResults));
         assertThat(expectedPage, is(result.currentPage()));
         assertThat(expectedPerPage, is(result.perPage()));
-        assertThat(categories.size(), is(result.total()));
+        assertThat(Long.valueOf(categories.size()), is(result.total()));
     }
 
     @Test

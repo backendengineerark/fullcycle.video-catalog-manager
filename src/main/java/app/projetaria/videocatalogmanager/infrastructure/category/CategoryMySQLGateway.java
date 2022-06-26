@@ -7,10 +7,21 @@ import app.projetaria.videocatalogmanager.domain.category.CategorySearchQuery;
 import app.projetaria.videocatalogmanager.domain.pagination.Pagination;
 import app.projetaria.videocatalogmanager.infrastructure.category.persistence.CategoryEntity;
 import app.projetaria.videocatalogmanager.infrastructure.category.persistence.CategoryRepository;
+import app.projetaria.videocatalogmanager.infrastructure.utils.SpecificationUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Component;
 
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.util.Objects;
 import java.util.Optional;
+
+import static app.projetaria.videocatalogmanager.infrastructure.utils.SpecificationUtils.like;
 
 @Component
 public class CategoryMySQLGateway implements CategoryGateway {
@@ -27,13 +38,17 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public void deleteById(CategoryId anId) {
-
+    public void deleteById(final CategoryId anId) {
+        final String id = anId.getValue();
+        if (this.repository.existsById(id)) {
+            this.repository.deleteById(id);
+        }
     }
 
     @Override
-    public Optional<Category> findById(CategoryId anId) {
-        return Optional.empty();
+    public Optional<Category> findById(final CategoryId anId) {
+        return this.repository.findById(anId.getValue())
+                .map(CategoryEntity::toAggregate);
     }
 
     @Override
@@ -42,8 +57,29 @@ public class CategoryMySQLGateway implements CategoryGateway {
     }
 
     @Override
-    public Pagination<Category> findAll(CategorySearchQuery aQuery) {
-        return null;
+    public Pagination<Category> findAll(final CategorySearchQuery aQuery) {
+        PageRequest page = PageRequest.of(
+            aQuery.page(),
+            aQuery.perPage(),
+            Sort.by(Sort.Direction.fromString(aQuery.direction()), aQuery.sort())
+        );
+
+        Specification<CategoryEntity> specifications = Optional.ofNullable(aQuery.terms())
+                .filter(term -> !term.isBlank())
+                .map(term -> SpecificationUtils
+                        .<CategoryEntity>like("name", term)
+                        .or(like("description", term))
+                ).orElse(null);
+
+        Page<CategoryEntity> result =
+                this.repository.findAll(Specification.where(specifications), page);
+
+        return new Pagination<>(
+            result.getNumber(),
+            result.getSize(),
+            result.getTotalElements(),
+            result.map(CategoryEntity::toAggregate).toList()
+        );
     }
 
     private Category save(final Category aCategory) {

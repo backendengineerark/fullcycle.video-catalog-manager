@@ -4,7 +4,7 @@ import java.util.List;
 import java.util.function.Function;
 
 public record Pagination<T>(
-        Integer currentPage, Integer perPage, Integer total, List<T> items) {
+        Integer currentPage, Integer perPage, Long total, List<T> items) {
 
     public <R> Pagination<R> map(final Function<T, R> mapper) {
         final List<R> aNewList = this.items.stream()
