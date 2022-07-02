@@ -1,37 +1,39 @@
-package app.projetaria.videocatalogmanager.application.category.create;
+package app.projetaria.videocatalogmanager.integration.category.create;
 
+import app.projetaria.videocatalogmanager.application.category.create.CreateCategoryCommand;
+import app.projetaria.videocatalogmanager.application.category.create.CreateCategoryOutput;
+import app.projetaria.videocatalogmanager.application.category.create.CreateCategoryUseCase;
 import app.projetaria.videocatalogmanager.domain.category.CategoryGateway;
 import app.projetaria.videocatalogmanager.domain.validation.handler.Notification;
+import app.projetaria.videocatalogmanager.infrastructure.category.persistence.CategoryEntity;
+import app.projetaria.videocatalogmanager.infrastructure.category.persistence.CategoryRepository;
+import app.projetaria.videocatalogmanager.integration.IntegrationTest;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
-
-import java.util.Objects;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.mock.mockito.SpyBean;
 
 import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
-import static org.hamcrest.Matchers.notNullValue;
-import static org.mockito.AdditionalAnswers.returnsFirstArg;
+import static org.hamcrest.Matchers.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.argThat;
 import static org.mockito.Mockito.*;
 
-@ExtendWith(MockitoExtension.class)
-public class CreateCategoryUseCaseTests {
+@IntegrationTest
+public class CreateCategoryUseCaseIT {
 
-    @InjectMocks
-    private DefaultCreateCategoryUseCase useCase;
+    @Autowired
+    private CreateCategoryUseCase useCase;
 
-    @Mock
+    @Autowired
+    private CategoryRepository repository;
+
+    @SpyBean
     private CategoryGateway gateway;
 
     @BeforeEach
-    void cleanUp() {
-        reset(gateway);
+    public void cleanUp() {
+        repository.deleteAll();
     }
 
     @Test
@@ -41,26 +43,26 @@ public class CreateCategoryUseCaseTests {
         final String expectedDescription = "Comedy category";
         final Boolean expectedStatus = true;
 
+        assertThat(repository.count(), is(0l));
+
         final CreateCategoryCommand command =
                 CreateCategoryCommand.with(expectedName, expectedDescription, expectedStatus);
 
-        when(gateway.create(any()))
-                .thenAnswer(returnsFirstArg());
-
         final CreateCategoryOutput output = useCase.execute(command).get();
 
+        assertThat(repository.count(), is(1l));
         assertThat(output, is(notNullValue()));
         assertThat(output.id(), is(notNullValue()));
 
-        verify(gateway, times(1)).create(argThat(aCategory -> {
-            return Objects.equals(expectedName, aCategory.getName()) &&
-                    Objects.equals(expectedDescription, aCategory.getDescription()) &&
-                    Objects.equals(expectedStatus, aCategory.getIsActive()) &&
-                    Objects.nonNull(aCategory.getId()) &&
-                    Objects.nonNull(aCategory.getCreatedAt()) &&
-                    Objects.nonNull(aCategory.getUpdatedAt()) &&
-                    Objects.isNull(aCategory.getDeletedAt());
-        }));
+        CategoryEntity categoryFounded =
+                repository.findById(output.id().getValue()).get();
+
+        assertThat(categoryFounded.getName(), is(expectedName));
+        assertThat(categoryFounded.getDescription(), is(expectedDescription));
+        assertThat(categoryFounded.getActive(), is(expectedStatus));
+        assertThat(categoryFounded.getCreatedAt(), is(notNullValue()));
+        assertThat(categoryFounded.getUpdatedAt(), is(notNullValue()));
+        assertThat(categoryFounded.getDeletedAt(), is(nullValue()));
     }
 
     @Test
@@ -70,6 +72,8 @@ public class CreateCategoryUseCaseTests {
         final String expectedDescription = "Comedy category";
         final Boolean expectedStatus = true;
 
+        assertThat(repository.count(), is(0l));
+
         final Integer expectedErrorCount = 1;
         final String expectedErrorMessage = "'Name' should not be null or empty";
 
@@ -77,6 +81,8 @@ public class CreateCategoryUseCaseTests {
                 CreateCategoryCommand.with(expectedName, expectedDescription, expectedStatus);
 
         final Notification notification = useCase.execute(command).getLeft();
+
+        assertThat(repository.count(), is(0l));
 
         assertThat(notification.getErrors().size(), is(expectedErrorCount));
         assertThat(notification.firstError().message(), is(expectedErrorMessage));
@@ -90,6 +96,8 @@ public class CreateCategoryUseCaseTests {
         final String expectedDescription = "Comedy category";
         final Boolean expectedStatus = true;
 
+        assertThat(repository.count(), is(0l));
+
         final Integer expectedErrorCount = 1;
         final String expectedErrorMessage = "'Name' should not be null or empty";
 
@@ -97,6 +105,8 @@ public class CreateCategoryUseCaseTests {
                 CreateCategoryCommand.with(expectedName, expectedDescription, expectedStatus);
 
         final Notification notification = useCase.execute(command).getLeft();
+
+        assertThat(repository.count(), is(0l));
 
         assertThat(notification.getErrors().size(), is(expectedErrorCount));
         assertThat(notification.firstError().message(), is(expectedErrorMessage));
@@ -110,26 +120,22 @@ public class CreateCategoryUseCaseTests {
         final String expectedDescription = "Comedy category";
         final Boolean expectedStatus = false;
 
+        assertThat(repository.count(), is(0l));
+
         final CreateCategoryCommand command =
                 CreateCategoryCommand.with(expectedName, expectedDescription, expectedStatus);
 
-        when(gateway.create(any()))
-                .thenAnswer(returnsFirstArg());
-
         final CreateCategoryOutput output = useCase.execute(command).get();
 
-        assertThat(output, is(notNullValue()));
-        assertThat(output.id(), is(notNullValue()));
+        CategoryEntity categoryFounded =
+                repository.findById(output.id().getValue()).get();
 
-        verify(gateway, times(1)).create(argThat(aCategory -> {
-            return Objects.equals(expectedName, aCategory.getName()) &&
-                    Objects.equals(expectedDescription, aCategory.getDescription()) &&
-                    Objects.equals(expectedStatus, aCategory.getIsActive()) &&
-                    Objects.nonNull(aCategory.getId()) &&
-                    Objects.nonNull(aCategory.getCreatedAt()) &&
-                    Objects.nonNull(aCategory.getUpdatedAt()) &&
-                    Objects.nonNull(aCategory.getDeletedAt());
-        }));
+        assertThat(categoryFounded.getName(), is(expectedName));
+        assertThat(categoryFounded.getDescription(), is(expectedDescription));
+        assertThat(categoryFounded.getActive(), is(expectedStatus));
+        assertThat(categoryFounded.getCreatedAt(), is(notNullValue()));
+        assertThat(categoryFounded.getUpdatedAt(), is(notNullValue()));
+        assertThat(categoryFounded.getDeletedAt(), is(notNullValue()));
     }
 
     @Test
@@ -145,22 +151,12 @@ public class CreateCategoryUseCaseTests {
         final CreateCategoryCommand command =
                 CreateCategoryCommand.with(expectedName, expectedDescription, expectedStatus);
 
-        when(gateway.create(any()))
-                .thenThrow(new IllegalStateException(expectedErrorMessage));
+        doThrow(new IllegalStateException(expectedErrorMessage))
+                .when(gateway).create(any());
 
         final Notification notification = useCase.execute(command).getLeft();
 
         assertThat(notification.getErrors().size(), is(expectedErrorCount));
         assertThat(notification.firstError().message(), is(expectedErrorMessage));
-
-        verify(gateway, times(1)).create(argThat(aCategory -> {
-            return Objects.equals(expectedName, aCategory.getName()) &&
-                    Objects.equals(expectedDescription, aCategory.getDescription()) &&
-                    Objects.equals(expectedStatus, aCategory.getIsActive()) &&
-                    Objects.nonNull(aCategory.getId()) &&
-                    Objects.nonNull(aCategory.getCreatedAt()) &&
-                    Objects.nonNull(aCategory.getUpdatedAt()) &&
-                    Objects.isNull(aCategory.getDeletedAt());
-        }));
     }
 }
