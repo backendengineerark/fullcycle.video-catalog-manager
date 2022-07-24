@@ -1,8 +1,10 @@
 package app.projetaria.videocatalogmanager.application.category.retrieve.get;
 
+import app.projetaria.videocatalogmanager.domain.category.Category;
 import app.projetaria.videocatalogmanager.domain.category.CategoryGateway;
 import app.projetaria.videocatalogmanager.domain.category.CategoryId;
 import app.projetaria.videocatalogmanager.domain.exception.DomainException;
+import app.projetaria.videocatalogmanager.domain.exception.NotFoundException;
 import app.projetaria.videocatalogmanager.domain.validation.Error;
 
 import java.util.Objects;
@@ -25,8 +27,7 @@ public class DefaultGetCategoryByIdUseCase extends GetCategoryByIdUseCase {
             .orElseThrow(notNull(id));
     }
 
-    private Supplier<DomainException> notNull(final CategoryId anId) {
-        return () -> DomainException.with(
-                new Error("Category with ID %s was not found".formatted(anId.getValue())));
+    private Supplier<NotFoundException> notNull(final CategoryId anId) {
+        return () -> NotFoundException.with(Category.class, anId);
     }
 }

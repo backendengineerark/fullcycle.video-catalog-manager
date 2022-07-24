@@ -55,7 +55,7 @@ public class CreateCategoryUseCaseIT {
         assertThat(output.id(), is(notNullValue()));
 
         CategoryEntity categoryFounded =
-                repository.findById(output.id().getValue()).get();
+                repository.findById(output.id()).get();
 
         assertThat(categoryFounded.getName(), is(expectedName));
         assertThat(categoryFounded.getDescription(), is(expectedDescription));
@@ -128,7 +128,7 @@ public class CreateCategoryUseCaseIT {
         final CreateCategoryOutput output = useCase.execute(command).get();
 
         CategoryEntity categoryFounded =
-                repository.findById(output.id().getValue()).get();
+                repository.findById(output.id()).get();
 
         assertThat(categoryFounded.getName(), is(expectedName));
         assertThat(categoryFounded.getDescription(), is(expectedDescription));

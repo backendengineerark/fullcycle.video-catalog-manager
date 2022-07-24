@@ -255,7 +255,7 @@ public class CategoryTests {
     }
 
     @Test
-    @DisplayName("Should create a category")
+    @DisplayName("Should activate a category")
     public void givenValidInactiveCategory_whenCallActivateCategory_thenReturnActivateCategory() {
         final String expectedName = "Comedy";
         final String expectedDescription = "Comedy category";

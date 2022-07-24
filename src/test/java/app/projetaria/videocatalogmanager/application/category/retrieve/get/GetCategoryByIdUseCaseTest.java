@@ -4,6 +4,7 @@ import app.projetaria.videocatalogmanager.domain.category.Category;
 import app.projetaria.videocatalogmanager.domain.category.CategoryGateway;
 import app.projetaria.videocatalogmanager.domain.category.CategoryId;
 import app.projetaria.videocatalogmanager.domain.exception.DomainException;
+import app.projetaria.videocatalogmanager.domain.exception.NotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
@@ -64,12 +65,12 @@ public class GetCategoryByIdUseCaseTest {
     @DisplayName("Should throw NotFoundException when try get a category with invalid ID")
     public void givenACommandWithInvalidID_whenCallGetCategory_shouldReturnNotFoundException() {
         final CategoryId expectedId = CategoryId.from("123");
-        final String expectedErrorMessage = "Category with ID 123 was not found";
+        final String expectedErrorMessage = "Category with id 123 was not found";
 
         when(categoryGateway.findById(eq(expectedId)))
                 .thenReturn(Optional.empty());
 
-        final DomainException exception = assertThrows(DomainException.class,
+        final DomainException exception = assertThrows(NotFoundException.class,
                 () -> useCase.execute(expectedId.getValue()));
 
         assertThat(exception.getMessage(), is(expectedErrorMessage));
